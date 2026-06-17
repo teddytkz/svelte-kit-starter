@@ -8,6 +8,10 @@ All notable changes to this project will be documented here. The format is based
 
 - [2026-06-16] PRD: SvelteKit + Bun + TypeScript project setup plan (`docs/planning/PRD-sveltekit-bun-setup.md`)
 - [2026-06-17] Dep: `@sveltejs/adapter-node` 5.5.4 — production SSR server (Node/Bun runnable). Replaces `adapter-auto` (M2).
+- [2026-06-17] Dep: `@tanstack/svelte-query` ^5 — server-state cache + `createQuery` for the routes. SSR-safe provider pattern in `src/routes/+layout.{ts,svelte}` and `src/lib/query-client.ts`.
+- [2026-06-17] Dep (dev): `@tanstack/svelte-query-devtools` ^5 — floating dev panel, mounted only when `dev` is true.
+- [2026-06-17] Demo: `src/routes/+page.svelte` now renders a `createQuery` against `jsonplaceholder.typicode.com/posts?_limit=5`, prefetched in `+page.ts` using SvelteKit's `event.fetch` and rehydrated on the client. Verifies the full SSR ↔ client cache flow.
+- [2026-06-17] Lib: `src/lib/queries.ts` — shared `queryOptions` helper so server and client share one `queryKey`/`queryFn` definition.
 - [2026-06-17] Scripts: `bun run start` runs `bun ./build/index.js` (Bun runtime, no Node required); `start:node` runs `node build` for hosts without Bun; `compile` produces a single-binary `sveltes-prod` via `bun build --compile` (M3).
 - [2026-06-17] Doc: setup guide for `@sveltejs/adapter-node` (`docs/deployment/adapter-node.md`) (M2).
 - [2026-06-17] Doc: "Running without Node.js" section — three runtime modes (Bun, single-binary, Node) with cross-compile example (M3).

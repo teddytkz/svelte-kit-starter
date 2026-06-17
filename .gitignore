@@ -25,3 +25,6 @@ vite.config.ts.timestamp-*
 # Bun (legacy binary lockfile from older Bun versions)
 bun.lockb
 package-lock.json
+
+# Log
+*.log
