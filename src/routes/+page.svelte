@@ -3,6 +3,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import { RefreshCw } from '@lucide/svelte';
 	import { postsQueryOptions } from '$lib/queries';
+	import type { PageData } from './$types';
+
+	// `App.PageData` is augmented in src/app.d.ts with `user?: PublicUser | null`
+	// (populated by +layout.server.ts). The auto-generated PageData only sees the
+	// universal +page.ts return, so we intersect it with the augmentation to
+	// expose `data.user` here.
+	let { data }: { data: App.PageData & PageData } = $props();
 
 	const posts = createQuery(() => postsQueryOptions(fetch));
 </script>
@@ -10,6 +17,15 @@
 <main class="mx-auto max-w-2xl space-y-4 p-6">
 	<header class="flex items-center justify-between">
 		<h1 class="text-3xl font-semibold">Latest Posts</h1>
+		<nav class="flex items-center gap-3 text-sm">
+			{#if data.user}
+				<a href="/dashboard" class="underline-offset-4 hover:underline">
+					{data.user.username}
+				</a>
+			{:else}
+				<a href="/login" class="underline-offset-4 hover:underline">Log in</a>
+			{/if}
+		</nav>
 		<Button
 			variant="outline"
 			size="icon"

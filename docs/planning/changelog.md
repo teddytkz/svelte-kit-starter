@@ -6,6 +6,8 @@ All notable changes to this project will be documented here. The format is based
 
 ### Added
 
+- [2026-06-17] Plan: JWT login (username + password) with shadcn-svelte login-02 block (`docs/planning/login-jwt-auth.md`)
+
 - [2026-06-16] PRD: SvelteKit + Bun + TypeScript project setup plan (`docs/planning/PRD-sveltekit-bun-setup.md`)
 - [2026-06-17] Dep: `@sveltejs/adapter-node` 5.5.4 — production SSR server (Node/Bun runnable). Replaces `adapter-auto` (M2).
 - [2026-06-17] Dep: `@tanstack/svelte-query` ^5 — server-state cache + `createQuery` for the routes. SSR-safe provider pattern in `src/routes/+layout.{ts,svelte}` and `src/lib/query-client.ts`.
@@ -22,6 +24,9 @@ All notable changes to this project will be documented here. The format is based
 
 ### Fixed
 
+- [2026-06-17] Fix plan: lazy / build-safe MySQL connection — switch `$lib/server/db` from `mysql2/promise` (eager) to callback `mysql2` (lazy) so `bun run build` and `bun run dev` work without a running MySQL daemon (`docs/planning/fix-lazy-db-connection.md`).
+- [2026-06-17] Fix plan: follow-up to the lazy-DB fix — callback `mysql2.createConnection` is synchronous but the constructor still fires the TCP handshake in the background, so on failure the `Connection` emits `'error'` and the unhandled event kills the process. Subscribe to `'error'` in `$lib/server/db/index.ts` (`docs/planning/fix-mysql2-error-listener.md`).
+- [2026-06-17] Fix plan: review findings on the JWT auth feature — open-redirect via `?next=` (validate with `safeNext` in a new client-safe `src/lib/safe-next.ts`); login timing oracle (precomputed `DUMMY_BCRYPT_HASH` + dummy `bcrypt.compare` in not-found branch); TOCTOU race in `/api/auth/register` (catch `ER_DUP_ENTRY` → 409); migration `002_add_credentials.sql` rewritten with `ADD COLUMN IF NOT EXISTS` / `ADD UNIQUE KEY IF NOT EXISTS`; JWT secret minimum 16 → 32 chars; logout redirects to `/` (not `/dashboard`); DB error listener logs to stderr (`docs/planning/fix-review-findings.md`).
 - [2026-06-16] Lint: scaffolded files (`.prettierrc`, `eslint.config.js`, `README.md`, and assorted `.github/` docs) were not Prettier-formatted, causing `bun run lint` to fail. Resolved by running `bun run format` (C1).
 - [2026-06-16] PRD: Phase 3 task 3.2 acceptance criterion referenced a `build/` directory, but `adapter-auto` (no platform detected) writes to `.svelte-kit/output/{client,server}/`. Reworded the AC to reference the correct path and note that switching adapters (e.g. `adapter-node`) will redirect output to `build/` (M1).
 

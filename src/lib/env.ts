@@ -41,5 +41,14 @@ export const env = {
 		USER: required('DB_USER'),
 		PASS: required('DB_PASS'),
 		NAME: required('DB_NAME')
+	},
+	JWT: {
+		SECRET: (() => {
+			const v = required('JWT_SECRET');
+			// HS256 requires ≥256 bits of secret (RFC 7518 §3.2). 32 ASCII
+			// chars is the minimum. Generate with: openssl rand -base64 32
+			if (v.length < 32) throw new Error('JWT_SECRET must be at least 32 characters');
+			return v;
+		})()
 	}
 } as const;
